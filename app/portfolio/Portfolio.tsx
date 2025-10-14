@@ -47,6 +47,23 @@ function getTextTokens(theme: "dark" | "dim" | "light") {
   return { primary: "#F3F5FA", body: "#DFE4F0", mist: "#BAC2D6" };
 }
 
+const THEME_BACKGROUND: Record<"dark" | "dim" | "light", { page: string; base: string }> = {
+  dark: {
+    page:
+      "radial-gradient(1200px 800px at 20% -10%, rgba(93,97,240,0.24), transparent 60%),radial-gradient(1000px 700px at 120% 10%, rgba(237,75,214,0.14), transparent 50%),#0b0d13",
+    base: "#0b0d13",
+  },
+  dim: {
+    page:
+      "radial-gradient(1200px 800px at 10% -10%, rgba(93,97,240,0.18), transparent 60%),radial-gradient(1000px 700px at 120% 12%, rgba(237,75,214,0.12), transparent 52%),#11131a",
+    base: "#11131a",
+  },
+  light: {
+    page: "linear-gradient(180deg, #ffffff, #f3f6ff)",
+    base: "#ffffff",
+  },
+};
+
 // ---- Cursor ----
 function Cursor() {
   const dot = useRef<HTMLDivElement>(null);
@@ -272,7 +289,7 @@ function HeroCanvas({ accentColor, theme }: { accentColor: string; theme: "dark"
     );
   }
 
-  const bg = theme === "light" ? "#ffffff" : "#0e1118";
+  const bg = THEME_BACKGROUND[theme].base;
   return (
     <div className="relative w-full h-full">
       <R3FErrorBoundary>
@@ -334,6 +351,9 @@ function Modal({
     ],
     [project]
   );
+  const modalPalette = THEME_BACKGROUND[theme];
+  const modalBorder =
+    theme === "light" ? "rgba(0,0,0,0.12)" : theme === "dim" ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.12)";
 
   return (
     <AnimatePresence>
@@ -350,8 +370,8 @@ function Modal({
             aria-modal="true"
             className="relative w-full max-w-5xl rounded-t-3xl border p-0 overflow-hidden"
             style={{
-              borderColor: theme === "light" ? "rgba(0,0,0,0.12)" : "rgba(255,255,255,0.12)",
-              background: theme === "light" ? "#ffffff" : "#0e1118",
+              borderColor: modalBorder,
+              background: modalPalette.base,
             }}
             initial={{ y: 64 }}
             animate={{ y: 0 }}
@@ -550,7 +570,7 @@ function ProjectCard({
   theme: "dark" | "dim" | "light";
   accentColor: string;
 }) {
-  const { title, subtitle, tags, summary, accentFrom, accentTo } = data;
+  const { title, subtitle, tags, summary, accentFrom, accentTo, embedSrc } = data;
   const borderCol = theme === "light" ? "border-black/10" : "border-white/10";
   const baseBg = theme === "light" ? "bg-white" : "bg-white/5";
   return (
@@ -587,6 +607,25 @@ function ProjectCard({
         <p className="leading-relaxed" style={{ color: "var(--body)" }}>
           {summary}
         </p>
+        {embedSrc && (
+          <div
+            className="mt-4 rounded-2xl overflow-hidden border"
+            style={{
+              borderColor: theme === "light" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.12)",
+              background: theme === "light" ? "#f9fafb" : "rgba(255,255,255,0.03)",
+            }}
+          >
+            <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
+              <iframe
+                title={`${title} Figma Prototype`}
+                src={embedSrc}
+                allowFullScreen
+                className="absolute inset-0 h-full w-full"
+                style={{ border: "1px solid rgba(0, 0, 0, 0.1)" }}
+              />
+            </div>
+          </div>
+        )}
         <div className="mt-auto flex flex-wrap gap-2">
           {tags.map((t: string) => (
             <span
@@ -618,6 +657,24 @@ function ProjectCard({
   );
 }
 
+function FigmaEmbed({ title, src }: { title: string; src: string }) {
+  return (
+    <div className="flex justify-center py-8">
+      <div className="w-full max-w-[800px]">
+        <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
+          <iframe
+            title={title}
+            src={src}
+            allowFullScreen
+            className="absolute inset-0 h-full w-full rounded-2xl shadow-[0_12px_45px_rgba(0,0,0,0.3)]"
+            style={{ border: "1px solid rgba(0, 0, 0, 0.1)" }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ---- Data ----
 const heroData = {
   titleLines: ["Designing intuitive", "interfaces that feel", "like second nature."],
@@ -626,6 +683,18 @@ const heroData = {
 };
 
 const projects = [
+  {
+    key: "pennywise",
+    title: "PennyWise",
+    subtitle: "Personal finance coach",
+    tags: ["Savings", "Behavioral Nudges", "AI Coach", "Mobile"],
+    summary:
+      "Automated saving rules, contextual spending insights, and gentle nudges that keep budgets on track without the stress.",
+    accentFrom: "rgba(91,95,239,0.45)",
+    accentTo: "rgba(59,201,245,0.32)",
+    embedSrc:
+      "https://embed.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1&embed-host=share",
+  },
   {
     key: "financeflow",
     title: "FinanceFlow",
@@ -645,6 +714,8 @@ const projects = [
       "Signals-based recommendations and a calmer, focused layout with elegant player controls.",
     accentFrom: "rgba(237,75,214,0.35)",
     accentTo: "rgba(91,95,239,0.35)",
+    embedSrc:
+      "https://embed.figma.com/design/MjRiItB7sjc1FyHvWCA9Cq/Stream-Vibe?node-id=0-1&embed-host=share",
   },
   {
     key: "mindspace",
@@ -665,6 +736,44 @@ const projects = [
       "Assignment tracking, optimized study sessions, and progress visualization aligned with academic goals.",
     accentFrom: "rgba(91,95,239,0.35)",
     accentTo: "rgba(237,75,214,0.25)",
+  },
+];
+
+const figmaProjects = [
+  {
+    key: "pennywise",
+    title: "PennyWise Prototype",
+    src: "https://embed.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1&embed-host=share",
+  },
+  {
+    key: "shared-vault",
+    title: "Shared Vault Prototype",
+    src: "https://embed.figma.com/design/zyR6HXBTF4wPkti0MIlXcX/shared-vault?node-id=0-1&embed-host=share",
+  },
+  {
+    key: "kid-revolut",
+    title: "Kid Revolut Prototype",
+    src: "https://embed.figma.com/design/E59cTlgHidvEjPLb7EqnwM/kid-revolut?node-id=0-1&embed-host=share",
+  },
+  {
+    key: "travel-ui",
+    title: "Travel UI Prototype",
+    src: "https://embed.figma.com/design/EOpWnFP2yjzWDw0hLNyo7B/Travel-ui?embed-host=share",
+  },
+  {
+    key: "gym-ui",
+    title: "Gym UI Prototype",
+    src: "https://embed.figma.com/design/P3Gyf12akeXXU9XHThINFg/Gym-ui?embed-host=share",
+  },
+  {
+    key: "taxi-ui",
+    title: "Taxi UI Prototype",
+    src: "https://embed.figma.com/design/kDHyrDSbnsyuz2tSiiLZez/Taxi-ui?embed-host=share",
+  },
+  {
+    key: "bank-app",
+    title: "Bank App Mock-up Prototype",
+    src: "https://embed.figma.com/design/KDjg2eDF1FoCQTJ4i0pend/Bank-app-mock-up?embed-host=share",
   },
 ];
 
@@ -710,29 +819,34 @@ export default function AdamCallistePortfolio() {
   // Apply page background + CSS vars
   useEffect(() => {
     const root = document.documentElement;
-    const bgDark =
-      "radial-gradient(1200px 800px at 20% -10%, rgba(93,97,240,0.24), transparent 60%),radial-gradient(1000px 700px at 120% 10%, rgba(237,75,214,0.14), transparent 50%),#0b0d13";
-    const bgDim =
-      "radial-gradient(1200px 800px at 10% -10%, rgba(93,97,240,0.12), transparent 60%),radial-gradient(1000px 700px at 120% 10%, rgba(237,75,214,0.08), transparent 50%),#11131a";
-    const bgLight = "linear-gradient(180deg, #ffffff, #f3f6ff)";
-    root.style.background = theme === "light" ? bgLight : theme === "dim" ? bgDim : bgDark;
+    const palette = THEME_BACKGROUND[theme];
+    const tokens = getTextTokens(theme);
 
-    const t = getTextTokens(theme);
-    root.style.setProperty("--fg", t.primary);
-    root.style.setProperty("--body", t.body);
-    root.style.setProperty("--mist", t.mist);
+    root.style.background = palette.page;
+    root.style.setProperty("--background", palette.page);
+    root.style.setProperty("--fg", tokens.primary);
+    root.style.setProperty("--body", tokens.body);
+    root.style.setProperty("--mist", tokens.mist);
+    root.style.setProperty("--foreground", tokens.primary);
+
+    document.body.style.background = palette.page;
+    document.body.style.color = tokens.body;
+    document.body.style.setProperty("--background", palette.page);
+    document.body.style.setProperty("--foreground", tokens.primary);
   }, [theme]);
 
   const accentColor = TOKENS.brand[accent];
+  const headerBgClass =
+    theme === "light" ? "bg-white/80" : theme === "dim" ? "bg-[#161926]/80" : "bg-[#101216]/75";
+  const headerBorderClass =
+    theme === "light" ? "border-black/10" : theme === "dim" ? "border-white/10" : "border-white/5";
 
   return (
     <div className={`min-h-screen`}>
       <Cursor />
       {/* Header */}
       <header
-        className={`sticky top-0 z-40 backdrop-blur ${
-          theme !== "light" ? "bg-[#101216]/70" : "bg-white/75"
-        } border-b ${theme !== "light" ? "border-white/5" : "border-black/10"}`}
+        className={`sticky top-0 z-40 backdrop-blur ${headerBgClass} border-b ${headerBorderClass}`}
       >
         <div className="mx-auto max-w-6xl px-6 sm:px-8 h-16 flex items-center justify-between">
           <a
@@ -851,7 +965,7 @@ export default function AdamCallistePortfolio() {
               <Info size={16} /> Accessibility, performance, and polish baked in.
             </p>
           </div>
-          {/* Visual: 3D model */}
+          {/* Visual: Figma prototype */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -860,9 +974,15 @@ export default function AdamCallistePortfolio() {
               theme === "light" ? "border-black/10 bg-white" : "border-white/8"
             }`}
           >
-            <HeroCanvas accentColor={accentColor} theme={theme} />
+            <iframe
+              title="PennyWise Prototype"
+              src="https://embed.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1&embed-host=share"
+              allowFullScreen
+              className="absolute inset-0 h-full w-full"
+              style={{ border: "1px solid rgba(0, 0, 0, 0.1)" }}
+            />
             <div className="absolute bottom-3 left-4 text-sm" style={{ color: "var(--mist)" }}>
-              Drag to orbit · Scroll to zoom
+              Live Figma prototype
             </div>
           </motion.div>
         </div>
@@ -892,6 +1012,10 @@ export default function AdamCallistePortfolio() {
     <div className="flex justify-center py-8">
       <PaySplitEmbedPhone />
     </div>
+    {/* ✅ Figma Prototype Embeds */}
+    {figmaProjects.map((item) => (
+      <FigmaEmbed key={item.key} title={item.title} src={item.src} />
+    ))}
   </div>
 </Section>
 

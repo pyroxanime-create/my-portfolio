@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Adam Calliste — Portfolio
 
-## Getting Started
+Interactive Next.js portfolio that showcases Figma prototypes (finance, streaming, wellness, travel, etc.), rich motion, and theme controls (dark/dim/light). Built with the App Router, Tailwind, Framer Motion, and React Three Fiber fallbacks.
 
-First, run the development server:
+## Tech Stack
+
+- **Framework:** Next.js (App Router, TypeScript)
+- **Styling:** Tailwind + custom tokens
+- **Animation:** Framer Motion
+- **3D / Canvas:** React Three Fiber with graceful degradation
+- **UI Embeds:** Responsive Figma iframes (auto scales to 16:9)
+
+## Local Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install          # install dependencies
+npm run dev          # start dev server on http://localhost:3000
+npm run lint         # optional: lint the project
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Any .env-specific values belong in `.env.local` (ignored by git).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Preparing the Repo for GitHub
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Make sure you are in the project root:  
+   `cd "/Users/pyropenname/Desktop/portfolio copy 2"`
+2. Review changes:  
+   `git status -sb`
+3. Stage everything you want to publish:  
+   `git add .`
+4. Commit with a descriptive message:  
+   `git commit -m "Describe your updates"`
+5. Create a GitHub repo (empty) and connect:  
+   `git remote add origin https://github.com/<user>/<repo>.git`
+6. Push the main branch:  
+   `git branch -M main`  
+   `git push -u origin main`
 
-## Learn More
+On subsequent updates just repeat steps 2–4 and `git push`.
 
-To learn more about Next.js, take a look at the following resources:
+## Deploying
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Vercel (recommended):** Import the GitHub repo and deploy (auto detects Next.js). Add any env vars in the Vercel dashboard.
+- **Static export:** `npm run build` followed by `npm run start` for Node hosting.
+- **Other hosts:** Netlify, Render, or custom Node server work; point them at `npm run build` / `npm run start`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+app/portfolio/Portfolio.tsx   // main portfolio surface
+app/portfolio/PaySplitEmbedPhone.tsx
+public/                       // static assets
+next.config.ts                // Next.js configuration (+ Turbopack root override)
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Feel free to update this README with links, case-study notes, or deployment URLs once the site is live. 
