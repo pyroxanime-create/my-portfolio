@@ -508,12 +508,12 @@ function Modal({
                     </p>
                     <p style={{ color: "var(--body)" }}>
                       Users face{" "}
-                      {project.title === "FinanceFlow"
-                        ? "overwhelming financial info"
-                        : project.title === "StreamVibe"
+                      {project.title === "StreamVibe"
                         ? "choice fatigue"
                         : project.title === "MindSpace"
                         ? "habit drop-offs"
+                        : project.title === "PennyWise"
+                        ? "overwhelming financial info"
                         : "fragmented planning"}{" "}
                       across tools.
                     </p>
@@ -696,16 +696,6 @@ const projects = [
       "https://embed.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1&embed-host=share",
   },
   {
-    key: "financeflow",
-    title: "FinanceFlow",
-    subtitle: "Modern banking app UI",
-    tags: ["Security", "Trust", "Money Management", "Design System"],
-    summary:
-      "Account overviews, granular histories, and low-friction transfers with clear affordances and progressive disclosure.",
-    accentFrom: "rgba(91,95,239,0.45)",
-    accentTo: "rgba(59,201,245,0.35)",
-  },
-  {
     key: "streamvibe",
     title: "StreamVibe",
     subtitle: "Streaming service UI",
@@ -726,6 +716,8 @@ const projects = [
       "Log moods, visualize trends, and nudge healthy habits with supportive interactions.",
     accentFrom: "rgba(59,201,245,0.35)",
     accentTo: "rgba(237,75,214,0.35)",
+    embedSrc:
+      "https://embed.figma.com/design/G0t1JySY61M9XGD37L0eBc/mindspace?node-id=0-1&embed-host=share",
   },
   {
     key: "studyflow",
@@ -751,24 +743,14 @@ const figmaProjects = [
     src: "https://embed.figma.com/design/zyR6HXBTF4wPkti0MIlXcX/shared-vault?node-id=0-1&embed-host=share",
   },
   {
+    key: "mindspace",
+    title: "MindSpace Prototype",
+    src: "https://embed.figma.com/design/G0t1JySY61M9XGD37L0eBc/mindspace?node-id=0-1&embed-host=share",
+  },
+  {
     key: "kid-revolut",
     title: "Kid Revolut Prototype",
     src: "https://embed.figma.com/design/E59cTlgHidvEjPLb7EqnwM/kid-revolut?node-id=0-1&embed-host=share",
-  },
-  {
-    key: "travel-ui",
-    title: "Travel UI Prototype",
-    src: "https://embed.figma.com/design/EOpWnFP2yjzWDw0hLNyo7B/Travel-ui?embed-host=share",
-  },
-  {
-    key: "gym-ui",
-    title: "Gym UI Prototype",
-    src: "https://embed.figma.com/design/P3Gyf12akeXXU9XHThINFg/Gym-ui?embed-host=share",
-  },
-  {
-    key: "taxi-ui",
-    title: "Taxi UI Prototype",
-    src: "https://embed.figma.com/design/kDHyrDSbnsyuz2tSiiLZez/Taxi-ui?embed-host=share",
   },
   {
     key: "bank-app",
@@ -785,7 +767,12 @@ const skills = {
     "Interaction design",
     "Design systems",
   ],
-  tech: ["Figma", "Adobe Creative Suite", "HTML", "CSS", "JavaScript (React/Next.js)"],
+  tech: [
+    { label: "Sigma / Figma", percent: 90 },
+    { label: "Clip Studio", percent: 85 },
+    { label: "Blender", percent: 80 },
+    { label: "Adobe Suite", percent: 70 },
+  ],
 };
 
 const education = [
@@ -1293,13 +1280,15 @@ export default function AdamCallistePortfolio() {
 }
 
 // ---- Skill Card ----
+type SkillItem = string | { label: string; percent?: number };
+
 function SkillCard({
   title,
   items,
   theme,
 }: {
   title: string;
-  items: string[];
+  items: SkillItem[];
   theme: "dark" | "dim" | "light";
 }) {
   return (
@@ -1313,31 +1302,36 @@ function SkillCard({
         {title}
       </h4>
       <ul className="space-y-3">
-        {items.map((i, idx) => (
-          <li key={i} className="text-sm">
-            <div className="flex items-center justify-between" style={{ color: "var(--body)" }}>
-              <span>{i}</span>
-              <span className="text-xs" style={{ color: "var(--mist)" }}>
-                {70 + idx * 6}%
-              </span>
-            </div>
-            <div
-              className="mt-2 h-2 rounded-full"
-              style={{ background: theme === "light" ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.12)" }}
-            >
-              <motion.div
-                initial={{ width: 0 }}
-                whileInView={{ width: `${70 + idx * 6}%` }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.9, ease: "easeOut" }}
-                className="h-full rounded-full"
-                style={{
-                  background: `linear-gradient(90deg, ${TOKENS.brand.iris}, ${TOKENS.brand.fuchsia}, ${TOKENS.brand.amber})`,
-                }}
-              />
-            </div>
-          </li>
-        ))}
+        {items.map((item, idx) => {
+          const data = typeof item === "string" ? { label: item } : item;
+          const label = data.label;
+          const percent = data.percent ?? 70 + idx * 6;
+          return (
+            <li key={label} className="text-sm">
+              <div className="flex items-center justify-between" style={{ color: "var(--body)" }}>
+                <span>{label}</span>
+                <span className="text-xs" style={{ color: "var(--mist)" }}>
+                  {percent}%
+                </span>
+              </div>
+              <div
+                className="mt-2 h-2 rounded-full"
+                style={{ background: theme === "light" ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.12)" }}
+              >
+                <motion.div
+                  initial={{ width: 0 }}
+                  whileInView={{ width: `${percent}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.9, ease: "easeOut" }}
+                  className="h-full rounded-full"
+                  style={{
+                    background: `linear-gradient(90deg, ${TOKENS.brand.iris}, ${TOKENS.brand.fuchsia}, ${TOKENS.brand.amber})`,
+                  }}
+                />
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </motion.div>
   );
