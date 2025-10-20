@@ -615,15 +615,23 @@ function ProjectCard({
               background: theme === "light" ? "#f9fafb" : "rgba(255,255,255,0.03)",
             }}
           >
-            <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
-              <iframe
-                title={`${title} Figma Prototype`}
-                src={embedSrc}
-                allowFullScreen
-                className="absolute inset-0 h-full w-full"
-                style={{ border: "1px solid rgba(0, 0, 0, 0.1)" }}
-              />
-            </div>
+            <LazyFigmaFrame
+              title={`${title} Figma Prototype`}
+              src={embedSrc}
+              frameStyle={{ border: "0" }}
+              placeholder={
+                <div
+                  className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-xs"
+                  style={{
+                    color: "var(--body)",
+                    background: "linear-gradient(120deg, rgba(91,95,239,0.12), rgba(237,75,214,0.12))",
+                  }}
+                >
+                  <span className="uppercase tracking-[0.28em]">Prototype</span>
+                  <span className="text-[11px] tracking-wide opacity-80">Tap to load preview</span>
+                </div>
+              }
+            />
           </div>
         )}
         <div className="mt-auto flex flex-wrap gap-2">
@@ -657,19 +665,105 @@ function ProjectCard({
   );
 }
 
+function LazyFigmaFrame({
+  title,
+  src,
+  className = "",
+  frameClassName = "",
+  style,
+  frameStyle,
+  placeholder,
+  persistent = false,
+  fill = false,
+}: {
+  title: string;
+  src: string;
+  className?: string;
+  frameClassName?: string;
+  style?: React.CSSProperties;
+  frameStyle?: React.CSSProperties;
+  placeholder?: React.ReactNode;
+  persistent?: boolean;
+  fill?: boolean;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const inView = useInView(ref, { margin: "0px 0px 160px 0px" });
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    if (inView) {
+      setShouldLoad(true);
+    } else if (!persistent) {
+      setShouldLoad(false);
+    }
+  }, [inView, persistent]);
+
+  const iframeStyle: React.CSSProperties = {
+    border: "1px solid rgba(0, 0, 0, 0.1)",
+    borderRadius: "inherit",
+    ...frameStyle,
+  };
+
+  const baseClass = `relative ${fill ? "h-full w-full" : ""} ${className}`.trim();
+  const frameClasses = `absolute inset-0 h-full w-full ${frameClassName}`.trim();
+
+  const fallbackNode =
+    placeholder ||
+    (
+      <div
+        className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-xs uppercase tracking-[0.28em]"
+        style={{
+          background: "linear-gradient(140deg, rgba(91,95,239,0.14), rgba(237,75,214,0.14))",
+          color: "var(--fg)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
+        Figma prototype
+        <span className="tracking-normal text-[10px]" style={{ color: "var(--body)" }}>
+          Loads on scroll
+        </span>
+      </div>
+    );
+
+  const content = shouldLoad ? (
+    <iframe
+      title={title}
+      src={src}
+      allowFullScreen
+      loading="lazy"
+      className={frameClasses}
+      style={iframeStyle}
+    />
+  ) : (
+    fallbackNode
+  );
+
+  if (fill) {
+    return (
+      <div ref={ref} className={baseClass} style={style}>
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <div ref={ref} className={baseClass} style={style}>
+      <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
+        {content}
+      </div>
+    </div>
+  );
+}
+
 function FigmaEmbed({ title, src }: { title: string; src: string }) {
   return (
     <div className="flex justify-center py-8">
       <div className="w-full max-w-[800px]">
-        <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
-          <iframe
-            title={title}
-            src={src}
-            allowFullScreen
-            className="absolute inset-0 h-full w-full rounded-2xl shadow-[0_12px_45px_rgba(0,0,0,0.3)]"
-            style={{ border: "1px solid rgba(0, 0, 0, 0.1)" }}
-          />
-        </div>
+        <LazyFigmaFrame
+          title={title}
+          src={src}
+          className="rounded-2xl shadow-[0_12px_45px_rgba(0,0,0,0.3)] overflow-hidden"
+        />
       </div>
     </div>
   );
@@ -733,19 +827,9 @@ const projects = [
 
 const figmaProjects = [
   {
-    key: "pennywise",
-    title: "PennyWise Prototype",
-    src: "https://embed.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1&embed-host=share",
-  },
-  {
     key: "shared-vault",
     title: "Shared Vault Prototype",
     src: "https://embed.figma.com/design/zyR6HXBTF4wPkti0MIlXcX/shared-vault?node-id=0-1&embed-host=share",
-  },
-  {
-    key: "mindspace",
-    title: "MindSpace Prototype",
-    src: "https://embed.figma.com/design/G0t1JySY61M9XGD37L0eBc/mindspace?node-id=0-1&embed-host=share",
   },
   {
     key: "kid-revolut",
@@ -961,14 +1045,64 @@ export default function AdamCallistePortfolio() {
               theme === "light" ? "border-black/10 bg-white" : "border-white/8"
             }`}
           >
-            <iframe
-              title="PennyWise Prototype"
-              src="https://embed.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1&embed-host=share"
-              allowFullScreen
-              className="absolute inset-0 h-full w-full"
-              style={{ border: "1px solid rgba(0, 0, 0, 0.1)" }}
-            />
-            <div className="absolute bottom-3 left-4 text-sm" style={{ color: "var(--mist)" }}>
+            <div className="absolute inset-0 hidden md:block">
+              <LazyFigmaFrame
+                title="PennyWise Prototype"
+                src="https://embed.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1&embed-host=share"
+                fill
+                persistent
+                frameStyle={{ border: "0" }}
+                placeholder={
+                  <div
+                    className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-xs uppercase tracking-[0.28em]"
+                    style={{
+                      color: "var(--body)",
+                      background: "linear-gradient(135deg, rgba(91,95,239,0.12), rgba(237,75,214,0.12))",
+                    }}
+                  >
+                    PennyWise prototype
+                    <span className="text-[11px] tracking-normal opacity-80">
+                      Loads when visible
+                    </span>
+                  </div>
+                }
+              />
+            </div>
+            <div
+              className="absolute inset-0 md:hidden flex flex-col justify-between p-6"
+              style={{
+                background:
+                  theme === "light"
+                    ? "linear-gradient(135deg, rgba(91,95,239,0.08), rgba(237,75,214,0.12))"
+                    : "linear-gradient(135deg, rgba(91,95,239,0.18), rgba(237,75,214,0.18))",
+                color: "var(--fg)",
+              }}
+            >
+              <div className="space-y-3">
+                <p className="text-sm uppercase tracking-[0.32em]" style={{ color: "var(--mist)" }}>
+                  Prototype
+                </p>
+                <h3 className="text-2xl font-semibold leading-snug">PennyWise mobile flow</h3>
+                <p className="text-sm" style={{ color: "var(--body)" }}>
+                  Tap below to open the interactive Figma prototype in a new tab. This keeps the page
+                  lightweight on mobile.
+                </p>
+              </div>
+              <Button
+                theme={theme}
+                accentColor={accentColor}
+                variant="primary"
+                href="https://www.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open in Figma
+              </Button>
+            </div>
+            <div
+              className="absolute bottom-3 left-4 hidden md:flex text-sm"
+              style={{ color: "var(--mist)" }}
+            >
               Live Figma prototype
             </div>
           </motion.div>
