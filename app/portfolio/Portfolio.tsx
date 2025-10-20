@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   ArrowUpRight,
@@ -570,7 +571,7 @@ function ProjectCard({
   theme: "dark" | "dim" | "light";
   accentColor: string;
 }) {
-  const { title, subtitle, tags, summary, accentFrom, accentTo, embedSrc } = data;
+  const { title, subtitle, tags, summary, accentFrom, accentTo, image, figmaUrl } = data;
   const borderCol = theme === "light" ? "border-black/10" : "border-white/10";
   const baseBg = theme === "light" ? "bg-white" : "bg-white/5";
   return (
@@ -579,23 +580,46 @@ function ProjectCard({
       className={`group overflow-hidden rounded-2xl border ${borderCol} ${baseBg} shadow-[0_8px_30px_rgba(0,0,0,0.15)] grid md:grid-cols-2`}
     >
       <div className="relative h-56 md:h-full">
-        <div
-          className="absolute inset-0"
-          style={{
-            background: `radial-gradient(120%_120% at 0% 100%, ${accentFrom}, transparent 60%),
+        {image ? (
+          <>
+            <Image
+              src={image}
+              alt={`${title} preview`}
+              fill
+              sizes="(min-width: 768px) 340px, 100vw"
+              className="object-cover"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  theme === "light"
+                    ? "linear-gradient(180deg, rgba(255,255,255,0.0), rgba(0,0,0,0.22))"
+                    : "linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.0))",
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <div
+              className="absolute inset-0"
+              style={{
+                background: `radial-gradient(120%_120% at 0% 100%, ${accentFrom}, transparent 60%),
                          radial-gradient(120%_120% at 100% 0%, ${accentTo}, transparent 60%),
                          linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))`,
-          }}
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              theme === "light"
-                ? "linear-gradient(180deg, rgba(255,255,255,0.0), rgba(0,0,0,0.1))"
-                : "linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.0))",
-          }}
-        />
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  theme === "light"
+                    ? "linear-gradient(180deg, rgba(255,255,255,0.0), rgba(0,0,0,0.1))"
+                    : "linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.0))",
+              }}
+            />
+          </>
+        )}
       </div>
       <div className="p-6 sm:p-8 flex flex-col gap-4">
         <div>
@@ -607,33 +631,6 @@ function ProjectCard({
         <p className="leading-relaxed" style={{ color: "var(--body)" }}>
           {summary}
         </p>
-        {embedSrc && (
-          <div
-            className="mt-4 rounded-2xl overflow-hidden border"
-            style={{
-              borderColor: theme === "light" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.12)",
-              background: theme === "light" ? "#f9fafb" : "rgba(255,255,255,0.03)",
-            }}
-          >
-            <LazyFigmaFrame
-              title={`${title} Figma Prototype`}
-              src={embedSrc}
-              frameStyle={{ border: "0" }}
-              placeholder={
-                <div
-                  className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-xs"
-                  style={{
-                    color: "var(--body)",
-                    background: "linear-gradient(120deg, rgba(91,95,239,0.12), rgba(237,75,214,0.12))",
-                  }}
-                >
-                  <span className="uppercase tracking-[0.28em]">Prototype</span>
-                  <span className="text-[11px] tracking-wide opacity-80">Tap to load preview</span>
-                </div>
-              }
-            />
-          </div>
-        )}
         <div className="mt-auto flex flex-wrap gap-2">
           {tags.map((t: string) => (
             <span
@@ -650,7 +647,19 @@ function ProjectCard({
             </span>
           ))}
         </div>
-        <div className="flex items-center justify-end">
+        <div className="flex flex-wrap items-center justify-end gap-3">
+          {figmaUrl && (
+            <Button
+              theme={theme}
+              accentColor={accentColor}
+              variant="secondary"
+              href={figmaUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View prototype <ArrowUpRight size={16} />
+            </Button>
+          )}
           <Button
             theme={theme}
             accentColor={accentColor}
@@ -665,105 +674,46 @@ function ProjectCard({
   );
 }
 
-function LazyFigmaFrame({
+function FigmaPreview({
   title,
-  src,
-  className = "",
-  frameClassName = "",
-  style,
-  frameStyle,
-  placeholder,
-  persistent = false,
-  fill = false,
+  image,
+  href,
+  theme,
 }: {
   title: string;
-  src: string;
-  className?: string;
-  frameClassName?: string;
-  style?: React.CSSProperties;
-  frameStyle?: React.CSSProperties;
-  placeholder?: React.ReactNode;
-  persistent?: boolean;
-  fill?: boolean;
+  image: string;
+  href: string;
+  theme: "dark" | "dim" | "light";
 }) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const inView = useInView(ref, { margin: "0px 0px 160px 0px" });
-  const [shouldLoad, setShouldLoad] = useState(false);
-
-  useEffect(() => {
-    if (inView) {
-      setShouldLoad(true);
-    } else if (!persistent) {
-      setShouldLoad(false);
-    }
-  }, [inView, persistent]);
-
-  const iframeStyle: React.CSSProperties = {
-    border: "1px solid rgba(0, 0, 0, 0.1)",
-    borderRadius: "inherit",
-    ...frameStyle,
-  };
-
-  const baseClass = `relative ${fill ? "h-full w-full" : ""} ${className}`.trim();
-  const frameClasses = `absolute inset-0 h-full w-full ${frameClassName}`.trim();
-
-  const fallbackNode =
-    placeholder ||
-    (
-      <div
-        className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-xs uppercase tracking-[0.28em]"
-        style={{
-          background: "linear-gradient(140deg, rgba(91,95,239,0.14), rgba(237,75,214,0.14))",
-          color: "var(--fg)",
-          backdropFilter: "blur(12px)",
-        }}
-      >
-        Figma prototype
-        <span className="tracking-normal text-[10px]" style={{ color: "var(--body)" }}>
-          Loads on scroll
-        </span>
-      </div>
-    );
-
-  const content = shouldLoad ? (
-    <iframe
-      title={title}
-      src={src}
-      allowFullScreen
-      loading="lazy"
-      className={frameClasses}
-      style={iframeStyle}
-    />
-  ) : (
-    fallbackNode
-  );
-
-  if (fill) {
-    return (
-      <div ref={ref} className={baseClass} style={style}>
-        {content}
-      </div>
-    );
-  }
-
-  return (
-    <div ref={ref} className={baseClass} style={style}>
-      <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
-        {content}
-      </div>
-    </div>
-  );
-}
-
-function FigmaEmbed({ title, src }: { title: string; src: string }) {
   return (
     <div className="flex justify-center py-8">
       <div className="w-full max-w-[800px]">
-        <LazyFigmaFrame
-          title={title}
-          src={src}
-          className="rounded-2xl shadow-[0_12px_45px_rgba(0,0,0,0.3)] overflow-hidden"
-        />
+        <div
+          className={`rounded-2xl overflow-hidden border shadow-[0_12px_45px_rgba(0,0,0,0.3)] ${
+            theme === "light" ? "border-black/10 bg-white" : "border-white/10 bg-white/5"
+          }`}
+        >
+          <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
+            <Image
+              src={image}
+              alt={`${title} preview`}
+              fill
+              sizes="(min-width: 768px) 800px, 100vw"
+              className="object-cover"
+            />
+          </div>
+          <div className="flex items-center justify-between px-4 py-3" style={{ color: "var(--body)" }}>
+            <span className="font-medium">{title}</span>
+            <a
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-sm text-iris hover:text-white transition"
+            >
+              View <ArrowUpRight size={14} />
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -786,8 +736,8 @@ const projects = [
       "Automated saving rules, contextual spending insights, and gentle nudges that keep budgets on track without the stress.",
     accentFrom: "rgba(91,95,239,0.45)",
     accentTo: "rgba(59,201,245,0.32)",
-    embedSrc:
-      "https://embed.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1&embed-host=share",
+    image: "/projects/pennywise.png",
+    figmaUrl: "https://www.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1",
   },
   {
     key: "streamvibe",
@@ -798,8 +748,8 @@ const projects = [
       "Signals-based recommendations and a calmer, focused layout with elegant player controls.",
     accentFrom: "rgba(237,75,214,0.35)",
     accentTo: "rgba(91,95,239,0.35)",
-    embedSrc:
-      "https://embed.figma.com/design/MjRiItB7sjc1FyHvWCA9Cq/Stream-Vibe?node-id=0-1&embed-host=share",
+    image: "/projects/stream-vibe.png",
+    figmaUrl: "https://www.figma.com/design/MjRiItB7sjc1FyHvWCA9Cq/Stream-Vibe?node-id=0-1",
   },
   {
     key: "mindspace",
@@ -810,8 +760,8 @@ const projects = [
       "Log moods, visualize trends, and nudge healthy habits with supportive interactions.",
     accentFrom: "rgba(59,201,245,0.35)",
     accentTo: "rgba(237,75,214,0.35)",
-    embedSrc:
-      "https://embed.figma.com/design/G0t1JySY61M9XGD37L0eBc/mindspace?node-id=0-1&embed-host=share",
+    image: "/projects/mindspace.png",
+    figmaUrl: "https://www.figma.com/design/G0t1JySY61M9XGD37L0eBc/mindspace?node-id=0-1",
   },
   {
     key: "studyflow",
@@ -829,17 +779,20 @@ const figmaProjects = [
   {
     key: "shared-vault",
     title: "Shared Vault Prototype",
-    src: "https://embed.figma.com/design/zyR6HXBTF4wPkti0MIlXcX/shared-vault?node-id=0-1&embed-host=share",
+    image: "/projects/shared-vault.png",
+    href: "https://www.figma.com/design/zyR6HXBTF4wPkti0MIlXcX/shared-vault?node-id=0-1",
   },
   {
     key: "kid-revolut",
     title: "Kid Revolut Prototype",
-    src: "https://embed.figma.com/design/E59cTlgHidvEjPLb7EqnwM/kid-revolut?node-id=0-1&embed-host=share",
+    image: "/projects/kid-revolut.png",
+    href: "https://www.figma.com/design/E59cTlgHidvEjPLb7EqnwM/kid-revolut?node-id=0-1",
   },
   {
     key: "bank-app",
     title: "Bank App Mock-up Prototype",
-    src: "https://embed.figma.com/design/KDjg2eDF1FoCQTJ4i0pend/Bank-app-mock-up?embed-host=share",
+    image: "/projects/bank-app.png",
+    href: "https://www.figma.com/design/KDjg2eDF1FoCQTJ4i0pend/Bank-app-mock-up",
   },
 ];
 
@@ -964,7 +917,8 @@ export default function AdamCallistePortfolio() {
                   setTheme((t) => (t === "dark" ? "dim" : t === "dim" ? "light" : "dark"))
                 }
               >
-                {theme === "light" ? <SunMedium size={16} /> : <Moon size={16} />} {theme}
+                {theme === "light" ? <SunMedium size={16} /> : <Moon size={16} />}{" "}
+                {theme === "dark" ? "Dim mode" : theme === "dim" ? "Light mode" : "Dark mode"}
               </Button>
               <div
                 className={`flex items-center gap-1 px-2 py-1.5 rounded-full ${
@@ -1045,65 +999,42 @@ export default function AdamCallistePortfolio() {
               theme === "light" ? "border-black/10 bg-white" : "border-white/8"
             }`}
           >
-            <div className="absolute inset-0 hidden md:block">
-              <LazyFigmaFrame
-                title="PennyWise Prototype"
-                src="https://embed.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1&embed-host=share"
-                fill
-                persistent
-                frameStyle={{ border: "0" }}
-                placeholder={
-                  <div
-                    className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-xs uppercase tracking-[0.28em]"
-                    style={{
-                      color: "var(--body)",
-                      background: "linear-gradient(135deg, rgba(91,95,239,0.12), rgba(237,75,214,0.12))",
-                    }}
-                  >
-                    PennyWise prototype
-                    <span className="text-[11px] tracking-normal opacity-80">
-                      Loads when visible
-                    </span>
-                  </div>
-                }
-              />
-            </div>
+            <Image
+              src="/projects/pennywise.png"
+              alt="PennyWise finance coaching flows"
+              fill
+              priority
+              sizes="(min-width: 1024px) 480px, 100vw"
+              className="object-cover"
+            />
             <div
-              className="absolute inset-0 md:hidden flex flex-col justify-between p-6"
+              className="absolute inset-0"
               style={{
                 background:
                   theme === "light"
-                    ? "linear-gradient(135deg, rgba(91,95,239,0.08), rgba(237,75,214,0.12))"
-                    : "linear-gradient(135deg, rgba(91,95,239,0.18), rgba(237,75,214,0.18))",
-                color: "var(--fg)",
+                    ? "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.4))"
+                    : "linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.2))",
               }}
-            >
-              <div className="space-y-3">
-                <p className="text-sm uppercase tracking-[0.32em]" style={{ color: "var(--mist)" }}>
-                  Prototype
-                </p>
-                <h3 className="text-2xl font-semibold leading-snug">PennyWise mobile flow</h3>
-                <p className="text-sm" style={{ color: "var(--body)" }}>
-                  Tap below to open the interactive Figma prototype in a new tab. This keeps the page
-                  lightweight on mobile.
-                </p>
+            />
+            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-7 flex flex-col gap-3">
+              <span className="text-xs uppercase tracking-[0.32em]" style={{ color: "var(--mist)" }}>
+                Featured prototype
+              </span>
+              <p className="text-lg font-semibold" style={{ color: "var(--fg)" }}>
+                PennyWise — mobile finance coach
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  theme={theme}
+                  accentColor={accentColor}
+                  variant="primary"
+                  href="https://www.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  View prototype <ArrowUpRight size={16} />
+                </Button>
               </div>
-              <Button
-                theme={theme}
-                accentColor={accentColor}
-                variant="primary"
-                href="https://www.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Open in Figma
-              </Button>
-            </div>
-            <div
-              className="absolute bottom-3 left-4 hidden md:flex text-sm"
-              style={{ color: "var(--mist)" }}
-            >
-              Live Figma prototype
             </div>
           </motion.div>
         </div>
@@ -1135,7 +1066,13 @@ export default function AdamCallistePortfolio() {
     </div>
     {/* ✅ Figma Prototype Embeds */}
     {figmaProjects.map((item) => (
-      <FigmaEmbed key={item.key} title={item.title} src={item.src} />
+      <FigmaPreview
+        key={item.key}
+        title={item.title}
+        image={item.image}
+        href={item.href}
+        theme={theme}
+      />
     ))}
   </div>
 </Section>
