@@ -664,7 +664,9 @@ function ProjectCard({
             theme={theme}
             accentColor={accentColor}
             variant="secondary"
-            onClick={() => onOpen(data)}
+            {...(figmaUrl
+              ? { href: figmaUrl, target: "_blank", rel: "noreferrer" }
+              : { onClick: () => onOpen(data) })}
           >
             View case study <ArrowUpRight size={16} />
           </Button>
@@ -773,6 +775,18 @@ const projects = [
     accentFrom: "rgba(91,95,239,0.35)",
     accentTo: "rgba(237,75,214,0.25)",
   },
+  {
+    key: "subhub",
+    title: "SubHub",
+    subtitle: "Subscription finance dashboard",
+    tags: ["Subscriptions", "Budgeting", "Insights", "Mobile"],
+    summary:
+      "Centralized dashboard for subscription spend with renewal timelines, cohort insights, and actionable trims.",
+    accentFrom: "rgba(91,95,239,0.35)",
+    accentTo: "rgba(237,75,214,0.28)",
+    image: "/projects/SubHub.png",
+    figmaUrl: "https://www.figma.com/design/E1nSvaEbAaraQGO5W4Nk2G/Subhub?node-id=0-1",
+  },
 ];
 
 const figmaProjects = [
@@ -793,6 +807,12 @@ const figmaProjects = [
     title: "Bank App Mock-up Prototype",
     image: "/projects/bank-app.png",
     href: "https://www.figma.com/design/KDjg2eDF1FoCQTJ4i0pend/Bank-app-mock-up",
+  },
+  {
+    key: "subhub",
+    title: "SubHub Prototype",
+    image: "/projects/SubHub.png",
+    href: "https://www.figma.com/design/E1nSvaEbAaraQGO5W4Nk2G/Subhub?node-id=0-1",
   },
 ];
 
