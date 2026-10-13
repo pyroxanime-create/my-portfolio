@@ -571,7 +571,7 @@ function ProjectCard({
   theme: "dark" | "dim" | "light";
   accentColor: string;
 }) {
-  const { title, subtitle, tags, summary, accentFrom, accentTo, image, figmaUrl } = data;
+  const { title, subtitle, tags, summary, accentFrom, accentTo, image, figmaUrl, liveUrl, caseUrl, status, credit } = data;
   const borderCol = theme === "light" ? "border-black/10" : "border-white/10";
   const baseBg = theme === "light" ? "bg-white" : "bg-white/5";
   return (
@@ -628,9 +628,30 @@ function ProjectCard({
           </h3>
         </div>
         <p style={{ color: "var(--mist)" }}>{subtitle}</p>
+        {status && (
+          <span
+            className="inline-flex w-fit items-center gap-2 text-xs font-medium px-3 py-1.5 rounded-full"
+            style={{
+              background: theme === "light" ? "rgba(245,158,11,0.12)" : "rgba(245,158,11,0.14)",
+              color: theme === "light" ? "#8a5300" : "#FCD34D",
+              border: "1px solid rgba(245,158,11,0.35)",
+            }}
+          >
+            <span className="relative flex h-2 w-2" aria-hidden>
+              <span className="absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping" style={{ background: "#F59E0B" }} />
+              <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "#F59E0B" }} />
+            </span>
+            {status}
+          </span>
+        )}
         <p className="leading-relaxed" style={{ color: "var(--body)" }}>
           {summary}
         </p>
+        {credit && (
+          <p className="text-sm" style={{ color: "var(--mist)" }}>
+            {credit}
+          </p>
+        )}
         <div className="mt-auto flex flex-wrap gap-2">
           {tags.map((t: string) => (
             <span
@@ -648,6 +669,18 @@ function ProjectCard({
           ))}
         </div>
         <div className="flex flex-wrap items-center justify-end gap-3">
+          {liveUrl && (
+            <Button
+              theme={theme}
+              accentColor={accentColor}
+              variant="primary"
+              href={liveUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Live app <ArrowUpRight size={16} />
+            </Button>
+          )}
           {figmaUrl && (
             <Button
               theme={theme}
@@ -657,14 +690,16 @@ function ProjectCard({
               target="_blank"
               rel="noreferrer"
             >
-              View prototype <ArrowUpRight size={16} />
+              {liveUrl ? "Figma" : "View prototype"} <ArrowUpRight size={16} />
             </Button>
           )}
           <Button
             theme={theme}
             accentColor={accentColor}
             variant="secondary"
-            {...(figmaUrl
+            {...(caseUrl
+              ? { href: caseUrl }
+              : figmaUrl
               ? { href: figmaUrl, target: "_blank", rel: "noreferrer" }
               : { onClick: () => onOpen(data) })}
           >
@@ -729,6 +764,23 @@ const heroData = {
 };
 
 const projects = [
+  {
+    key: "global",
+    title: "GLOBAL",
+    subtitle: "International money transfer app",
+    status: "Usability testing in progress",
+    tags: ["Fintech", "Design system", "Accessibility", "Coded prototype"],
+    summary:
+      "Send money abroad and know exactly what arrives, and when. A research plan, a design system, 28 screens in light and dark, an interactive Figma prototype and a working app you can try in your browser.",
+    credit: "Designed and built by Adam Calliste · Solo project · 2026",
+    accentFrom: "rgba(81,69,255,0.45)",
+    accentTo: "rgba(59,201,245,0.30)",
+    image: "/projects/global.png",
+    liveUrl: "/global.html",
+    caseUrl: "/work/global",
+    figmaUrl:
+      "https://www.figma.com/proto/BoeF9E7Ug9TG1ufPnzuhEw/GLOBAL?node-id=66-13700&starting-point-node-id=66-13700&page-id=1%3A10&scaling=scale-down",
+  },
   {
     key: "pennywise",
     title: "PennyWise",
@@ -1069,7 +1121,7 @@ export default function AdamCallistePortfolio() {
   title="Projects that blend psychology and design."
   theme={theme}
 >
-  <div className="grid gap-6">
+  <div className="grid grid-cols-1 gap-6">
     {projects.map((p) => (
       <ProjectCard
         key={p.key}
