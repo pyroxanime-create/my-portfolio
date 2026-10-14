@@ -513,8 +513,6 @@ function Modal({
                         ? "choice fatigue"
                         : project.title === "MindSpace"
                         ? "habit drop-offs"
-                        : project.title === "PennyWise"
-                        ? "overwhelming financial info"
                         : "fragmented planning"}{" "}
                       across tools.
                     </p>
@@ -765,6 +763,23 @@ const heroData = {
 
 const projects = [
   {
+    key: "daymark",
+    title: "DAYMARK",
+    subtitle: "Budgeting and savings app",
+    status: "Usability testing planned",
+    tags: ["Fintech", "Data visualisation", "Accessibility", "Coded prototype"],
+    summary:
+      "See what’s left to spend, what’s due before payday and whether savings goals are on track, with the working shown for every estimate. A research plan, lo-fi and mid-fi wireframes, a design system, light and dark screens for phone and desktop, a clickable Figma prototype and a working app you can try in your browser.",
+    credit: "Designed and built by Adam Calliste · Solo project · 2026",
+    accentFrom: "rgba(23,107,87,0.45)",
+    accentTo: "rgba(201,242,122,0.30)",
+    image: "/projects/daymark.png",
+    liveUrl: "/daymark.html",
+    caseUrl: "/work/daymark",
+    figmaUrl:
+      "https://www.figma.com/proto/bWCqBeiryO7JvaeEoV4YqT/DAYMARK?node-id=49-8&starting-point-node-id=49-8&page-id=3%3A13&scaling=scale-down",
+  },
+  {
     key: "global",
     title: "GLOBAL",
     subtitle: "International money transfer app",
@@ -780,18 +795,6 @@ const projects = [
     caseUrl: "/work/global",
     figmaUrl:
       "https://www.figma.com/proto/BoeF9E7Ug9TG1ufPnzuhEw/GLOBAL?node-id=66-13700&starting-point-node-id=66-13700&page-id=1%3A10&scaling=scale-down",
-  },
-  {
-    key: "pennywise",
-    title: "PennyWise",
-    subtitle: "Personal finance coach",
-    tags: ["Savings", "Behavioral Nudges", "AI Coach", "Mobile"],
-    summary:
-      "Automated saving rules, contextual spending insights, and gentle nudges that keep budgets on track without the stress.",
-    accentFrom: "rgba(91,95,239,0.45)",
-    accentTo: "rgba(59,201,245,0.32)",
-    image: "/projects/pennywise.png",
-    figmaUrl: "https://www.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1",
   },
   {
     key: "streamvibe",
@@ -1072,40 +1075,50 @@ export default function AdamCallistePortfolio() {
             }`}
           >
             <Image
-              src="/projects/pennywise.png"
-              alt="PennyWise finance coaching flows"
+              src="/projects/daymark-feature-m.png"
+              alt="DAYMARK screens: Home with the cash balance and spending this month, the budgets list, and Looking ahead in dark mode"
               fill
               priority
-              sizes="(min-width: 1024px) 480px, 100vw"
-              className="object-cover"
+              sizes="100vw"
+              className="object-cover sm:hidden"
+            />
+            <Image
+              src="/projects/daymark-feature.png"
+              alt="DAYMARK screens: Home with the cash balance and spending this month, the budgets list, and Looking ahead in dark mode"
+              fill
+              priority
+              sizes="(min-width: 1024px) 1100px, 100vw"
+              className="object-cover hidden sm:block"
             />
             <div
               className="absolute inset-0"
               style={{
-                background:
-                  theme === "light"
-                    ? "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.4))"
-                    : "linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.2))",
+                background: "linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55))",
               }}
             />
             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-7 flex flex-col gap-3">
-              <span className="text-xs uppercase tracking-[0.32em]" style={{ color: "var(--mist)" }}>
+              <span className="text-xs uppercase tracking-[0.32em]" style={{ color: "rgba(242,247,243,0.78)" }}>
                 Featured prototype
               </span>
-              <p className="text-lg font-semibold" style={{ color: "var(--fg)" }}>
-                PennyWise — mobile finance coach
+              <p className="text-lg font-semibold" style={{ color: "#F2F7F3" }}>
+                DAYMARK — budgeting and savings app
               </p>
               <div className="flex flex-wrap gap-3">
-                <Button
-                  theme={theme}
-                  accentColor={accentColor}
-                  variant="primary"
-                  href="https://www.figma.com/design/SgZJcSvAPxc8WL5XSxOjwD/Penny-wise?node-id=0-1"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View prototype <ArrowUpRight size={16} />
+                <Button theme={theme} accentColor={accentColor} variant="primary" href="/work/daymark">
+                  View case study <ArrowUpRight size={16} />
                 </Button>
+                <span className="hidden sm:inline-flex">
+                  <Button
+                    theme={theme}
+                    accentColor={accentColor}
+                    variant="secondary"
+                    href="/daymark.html"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Try the app <ArrowUpRight size={16} />
+                  </Button>
+                </span>
               </div>
             </div>
           </motion.div>
