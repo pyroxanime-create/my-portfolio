@@ -763,6 +763,23 @@ const heroData = {
 
 const projects = [
   {
+    key: "kivo",
+    title: "KIVO",
+    subtitle: "Subscription management app",
+    status: "Not yet tested with users",
+    tags: ["Fintech", "Subscriptions", "Accessibility", "Coded prototype"],
+    summary:
+      "See every subscription, what it costs a year and what’s due next, with guided cancelling that never pretends to cancel for you. A coded prototype, a design system, 237 screens, sheets and dialogs in light and dark, and a fully wired Figma prototype.",
+    credit: "Designed and built by Adam Calliste · Solo project · 2026",
+    accentFrom: "rgba(101,71,245,0.45)",
+    accentTo: "rgba(196,181,255,0.30)",
+    image: "/projects/kivo.png",
+    liveUrl: "/kivo.html",
+    caseUrl: "/work/kivo",
+    figmaUrl:
+      "https://www.figma.com/proto/QVzt4ygQoITrjWHEIAM5Sq/KIVO?node-id=14-2&starting-point-node-id=14-2&page-id=2%3A2&scaling=scale-down",
+  },
+  {
     key: "daymark",
     title: "DAYMARK",
     subtitle: "Budgeting and savings app",
@@ -830,18 +847,6 @@ const projects = [
     accentFrom: "rgba(91,95,239,0.35)",
     accentTo: "rgba(237,75,214,0.25)",
   },
-  {
-    key: "subhub",
-    title: "SubHub",
-    subtitle: "Subscription finance dashboard",
-    tags: ["Subscriptions", "Budgeting", "Insights", "Mobile"],
-    summary:
-      "Centralized dashboard for subscription spend with renewal timelines, cohort insights, and actionable trims.",
-    accentFrom: "rgba(91,95,239,0.35)",
-    accentTo: "rgba(237,75,214,0.28)",
-    image: "/projects/SubHub.png",
-    figmaUrl: "https://www.figma.com/design/E1nSvaEbAaraQGO5W4Nk2G/Subhub?node-id=0-1",
-  },
 ];
 
 const figmaProjects = [
@@ -862,12 +867,6 @@ const figmaProjects = [
     title: "Bank App Mock-up Prototype",
     image: "/projects/bank-app.png",
     href: "https://www.figma.com/design/KDjg2eDF1FoCQTJ4i0pend/Bank-app-mock-up",
-  },
-  {
-    key: "subhub",
-    title: "SubHub Prototype",
-    image: "/projects/SubHub.png",
-    href: "https://www.figma.com/design/E1nSvaEbAaraQGO5W4Nk2G/Subhub?node-id=0-1",
   },
 ];
 
@@ -1075,16 +1074,16 @@ export default function AdamCallistePortfolio() {
             }`}
           >
             <Image
-              src="/projects/daymark-feature-m.png"
-              alt="DAYMARK screens: Home with the cash balance and spending this month, the budgets list, and Looking ahead in dark mode"
+              src="/projects/kivo-feature-m.png"
+              alt="KIVO screens: Home with £101.82 a month across 11 active subscriptions, the subscriptions list, and spending by category in dark mode"
               fill
               priority
               sizes="100vw"
               className="object-cover sm:hidden"
             />
             <Image
-              src="/projects/daymark-feature.png"
-              alt="DAYMARK screens: Home with the cash balance and spending this month, the budgets list, and Looking ahead in dark mode"
+              src="/projects/kivo-feature.png"
+              alt="KIVO screens: Home with £101.82 a month across 11 active subscriptions, the subscriptions list, and spending by category in dark mode"
               fill
               priority
               sizes="(min-width: 1024px) 1100px, 100vw"
@@ -1101,10 +1100,10 @@ export default function AdamCallistePortfolio() {
                 Featured prototype
               </span>
               <p className="text-lg font-semibold" style={{ color: "#F2F7F3" }}>
-                DAYMARK — budgeting and savings app
+                KIVO — subscription management app
               </p>
               <div className="flex flex-wrap gap-3">
-                <Button theme={theme} accentColor={accentColor} variant="primary" href="/work/daymark">
+                <Button theme={theme} accentColor={accentColor} variant="primary" href="/work/kivo">
                   View case study <ArrowUpRight size={16} />
                 </Button>
                 <span className="hidden sm:inline-flex">
@@ -1112,7 +1111,7 @@ export default function AdamCallistePortfolio() {
                     theme={theme}
                     accentColor={accentColor}
                     variant="secondary"
-                    href="/daymark.html"
+                    href="/kivo.html"
                     target="_blank"
                     rel="noreferrer"
                   >
