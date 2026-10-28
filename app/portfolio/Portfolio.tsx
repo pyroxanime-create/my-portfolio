@@ -763,6 +763,23 @@ const heroData = {
 
 const projects = [
   {
+    key: "atlas",
+    title: "ATLAS",
+    subtitle: "Travel planning and trip management app",
+    status: "Not yet tested with users",
+    tags: ["Travel", "Drag and drop", "Accessibility", "Coded prototype"],
+    summary:
+      "Plan a trip, reshape each day by dragging stops and see the new times before you let go, then get through the day itself with what’s next and when to leave. A coded prototype, a design system, low-fi wireframes, 123 screens with dark versions and a wired Figma prototype.",
+    credit: "Designed and built by Adam Calliste · Solo project · 2026",
+    accentFrom: "rgba(36,92,115,0.50)",
+    accentTo: "rgba(54,166,154,0.30)",
+    image: "/projects/atlas.webp",
+    liveUrl: "/atlas.html",
+    caseUrl: "/work/atlas",
+    figmaUrl:
+      "https://www.figma.com/proto/zSLpBSIlO67JMKtTmlyadM/ATLAS?node-id=54-2&starting-point-node-id=54-2&page-id=1%3A6&scaling=scale-down",
+  },
+  {
     key: "kivo",
     title: "KIVO",
     subtitle: "Subscription management app",
@@ -1074,16 +1091,16 @@ export default function AdamCallistePortfolio() {
             }`}
           >
             <Image
-              src="/projects/kivo-feature-m.png"
-              alt="KIVO screens: Home with £101.82 a month across 11 active subscriptions, the subscriptions list, and spending by category in dark mode"
+              src="/projects/atlas-feature-m.webp"
+              alt="ATLAS screens: Explore with the upcoming Tokyo trip, a stop being dragged to a new place in day 2 with its new start time shown, and Today in Tokyo in dark mode"
               fill
               priority
               sizes="100vw"
               className="object-cover sm:hidden"
             />
             <Image
-              src="/projects/kivo-feature.png"
-              alt="KIVO screens: Home with £101.82 a month across 11 active subscriptions, the subscriptions list, and spending by category in dark mode"
+              src="/projects/atlas-feature.webp"
+              alt="ATLAS screens: Explore with the upcoming Tokyo trip, a stop being dragged to a new place in day 2 with its new start time shown, and Today in Tokyo in dark mode"
               fill
               priority
               sizes="(min-width: 1024px) 1100px, 100vw"
@@ -1100,10 +1117,10 @@ export default function AdamCallistePortfolio() {
                 Featured prototype
               </span>
               <p className="text-lg font-semibold" style={{ color: "#F2F7F3" }}>
-                KIVO — subscription management app
+                ATLAS — travel planning app
               </p>
               <div className="flex flex-wrap gap-3">
-                <Button theme={theme} accentColor={accentColor} variant="primary" href="/work/kivo">
+                <Button theme={theme} accentColor={accentColor} variant="primary" href="/work/atlas">
                   View case study <ArrowUpRight size={16} />
                 </Button>
                 <span className="hidden sm:inline-flex">
@@ -1111,7 +1128,7 @@ export default function AdamCallistePortfolio() {
                     theme={theme}
                     accentColor={accentColor}
                     variant="secondary"
-                    href="/kivo.html"
+                    href="/atlas.html"
                     target="_blank"
                     rel="noreferrer"
                   >
