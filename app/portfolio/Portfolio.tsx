@@ -831,6 +831,23 @@ const projects = [
       "https://www.figma.com/proto/BoeF9E7Ug9TG1ufPnzuhEw/GLOBAL?node-id=66-13700&starting-point-node-id=66-13700&page-id=1%3A10&scaling=scale-down",
   },
   {
+    key: "global-plus",
+    title: "Global Plus",
+    subtitle: "Identity verification for GLOBAL",
+    status: "Usability testing planned",
+    tags: ["Fintech", "Identity verification", "Accessibility", "Coded prototype"],
+    summary:
+      "Verify who you are the way the law where you live allows: an ID card chip in Germany, a BVN in Nigeria, photo ID and a selfie in the UK, and always a route with no face scan. Desk research across six markets, lo-fi wireframes, a design system, 47 screens in light and dark, a wired Figma prototype and a working app you can try in your browser.",
+    credit: "Designed and built by Adam Calliste · Solo project · 2026",
+    accentFrom: "rgba(81,69,255,0.45)",
+    accentTo: "rgba(60,203,148,0.30)",
+    image: "/projects/global-plus.png",
+    liveUrl: "/global-plus.html",
+    caseUrl: "/work/global-plus",
+    figmaUrl:
+      "https://www.figma.com/proto/Yore8iaeYjgFaskCiINd1v/Global-Plus?node-id=11-4&starting-point-node-id=11-4&page-id=2%3A7&scaling=scale-down",
+  },
+  {
     key: "streamvibe",
     title: "StreamVibe",
     subtitle: "Streaming service UI",
